@@ -61,7 +61,16 @@ python --version
 
 Em algumas instalações do Windows também existe o launcher `py`, mas ele não é obrigatório. Os comandos abaixo usam diretamente `python` para funcionar mesmo quando o launcher não está instalado. A opção `-3` pertence exclusivamente ao comando `py` e não deve ser passada para `python`.
 
-Crie e ative um ambiente virtual:
+O modo padrão no Windows é `connect` e utiliza somente a biblioteca padrão. Portanto, é possível executar imediatamente, sem instalar pacotes ou criar ambiente virtual:
+
+```powershell
+python -m redescan 127.0.0.1 -p 80,443 -P tcp
+python -m redescan 192.168.1.1 -p 22,53,80,443 -P both
+```
+
+### Ambiente virtual opcional
+
+O ambiente virtual é recomendado para instalar dependências do modo raw, mas não é necessário para o modo `connect`:
 
 ```powershell
 python -m venv .venv
@@ -69,11 +78,10 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
 ```
 
-O modo padrão no Windows é `connect`, por isso nenhuma dependência adicional é necessária:
+Se a criação for interrompida durante a etapa `ensurepip`, o ambiente pode ficar sem `pip`. Deixe o primeiro comando terminar ou complete o ambiente parcial com:
 
 ```powershell
-python -m redescan 127.0.0.1 -p 80,443 -P tcp
-python -m redescan 192.168.1.1 -p 22,53,80,443 -P both
+.\.venv\Scripts\python.exe -m ensurepip --upgrade
 ```
 
 Para instalar o comando `redescan` no ambiente virtual:
@@ -95,8 +103,6 @@ O modo raw também pode ser usado no Windows, mas requer:
 ```powershell
 python -m redescan 192.168.1.1 -p 22,80,443 -P tcp --method raw
 ```
-
-Se o objetivo for apenas desenvolver, demonstrar e entregar a atividade no seu PC, o modo `connect` é o mais simples. O modo `raw` continua disponível para demonstrar especificamente o envio de SYN.
 
 ## Instalação no Linux
 
