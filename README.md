@@ -104,6 +104,36 @@ O modo raw também pode ser usado no Windows, mas requer:
 python -m redescan 192.168.1.1 -p 22,80,443 -P tcp --method raw
 ```
 
+Para validar o envio de SYN raw de forma controlada, abra dois PowerShells. No primeiro, inicie um servidor HTTP local:
+
+```powershell
+python -m http.server 8000 --bind 127.0.0.1
+```
+
+No segundo, aberto como administrador, escaneie a porta `8000`:
+
+```powershell
+python -m redescan 127.0.0.1 -p 8000 -P tcp --method raw -t 2 -r 1
+```
+
+Com o servidor ativo, o resultado esperado é `open`, com o motivo `SYN-ACK recebido`.
+
+Se o Npcap não capturar corretamente o tráfego de loopback, descubra o IPv4 do computador:
+
+```powershell
+ipconfig
+```
+
+Inicie o servidor em todas as interfaces e substitua `SEU_IPV4` pelo endereço encontrado:
+
+```powershell
+# PowerShell 1
+python -m http.server 8000 --bind 0.0.0.0
+
+# PowerShell 2, executado como administrador
+python -m redescan SEU_IPV4 -p 8000 -P tcp --method raw -t 2 -r 1
+```
+
 ## Instalação no Linux
 
 No Ubuntu/Debian:
