@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "redescan"
+version = "1.0.0"
+description = "Scanner educacional de portas TCP SYN e UDP"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+raw = ["scapy>=2.5.0,<3.0"]
+
+[project.scripts]
+redescan = "redescan.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["redescan*"]
