@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import patch
-
 from redescan.cli import _resolve_method
-
 
 class MethodSelectionTests(unittest.TestCase):
     @patch("redescan.cli.platform.system", return_value="Windows")
@@ -16,7 +14,6 @@ class MethodSelectionTests(unittest.TestCase):
     def test_explicit_method_is_preserved(self):
         self.assertEqual(_resolve_method("connect"), "connect")
         self.assertEqual(_resolve_method("raw"), "raw")
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,17 +1,13 @@
 """Motor concorrente de varredura."""
-
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Protocol as TypingProtocol
-
 from redescan.models import PortState, Protocol, ScanResult
-
 
 class Prober(TypingProtocol):
     def tcp(self, target: str, port: int) -> tuple[PortState, str]: ...
 
     def udp(self, target: str, port: int) -> tuple[PortState, str]: ...
-
 
 class Scanner:
     def __init__(self, prober: Prober, workers: int = 100) -> None:

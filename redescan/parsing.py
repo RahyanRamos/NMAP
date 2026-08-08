@@ -1,11 +1,8 @@
 """Validação de alvos e intervalos de portas."""
-
 from collections.abc import Iterable
 from ipaddress import IPv4Address, IPv4Network, ip_address, ip_network
 
-
 MAX_PORT = 65_535
-
 
 def parse_ports(expression: str) -> list[int]:
     """Converte ``22,53,80,8000-8010`` em uma lista ordenada e sem repetições."""
@@ -32,7 +29,6 @@ def parse_ports(expression: str) -> list[int]:
 
     return sorted(ports)
 
-
 def _parse_port(value: str) -> int:
     try:
         port = int(value)
@@ -41,7 +37,6 @@ def _parse_port(value: str) -> int:
     if not 1 <= port <= MAX_PORT:
         raise ValueError(f"porta fora do intervalo 1-{MAX_PORT}: {port}")
     return port
-
 
 def expand_targets(expressions: Iterable[str]) -> list[str]:
     """Expande IPv4 individuais e redes CIDR, preservando a ordem informada."""
@@ -71,4 +66,3 @@ def expand_targets(expressions: Iterable[str]) -> list[str]:
     if not targets:
         raise ValueError("nenhum host utilizável foi encontrado")
     return targets
-

@@ -1,8 +1,6 @@
 import unittest
-
 from redescan.models import PortState, Protocol
 from redescan.scanner import Scanner
-
 
 class FakeProber:
     def tcp(self, target, port):
@@ -12,7 +10,6 @@ class FakeProber:
 
     def udp(self, target, port):
         return PortState.OPEN_OR_FILTERED, "sem resposta"
-
 
 class ScannerTests(unittest.TestCase):
     def test_combines_targets_ports_and_protocols(self):
@@ -33,7 +30,6 @@ class ScannerTests(unittest.TestCase):
     def test_rejects_invalid_worker_count(self):
         with self.assertRaisesRegex(ValueError, "workers"):
             Scanner(FakeProber(), workers=0)
-
 
 if __name__ == "__main__":
     unittest.main()

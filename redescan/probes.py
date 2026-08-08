@@ -1,14 +1,10 @@
 """Sondagens de rede implementadas com Scapy ou sockets do sistema."""
-
 import errno
 import socket
 from typing import Any
-
 from redescan.models import PortState
 
-
 FILTERED_ICMP_CODES = {1, 2, 9, 10, 13}
-
 
 class ScapyProber:
     """Envia pacotes SYN TCP e datagramas UDP sem completar conexões TCP."""
@@ -92,7 +88,6 @@ class ScapyProber:
                 break
         return response
 
-
 class SocketProber:
     """Sonda portas com a API de sockets, sem exigir pacotes raw ou administrador."""
 
@@ -162,7 +157,6 @@ class SocketProber:
                 return PortState.FILTERED, f"erro de rede (código {code})"
 
         return PortState.OPEN_OR_FILTERED, "sem resposta"
-
 
 def _socket_error_code(error: OSError) -> int | str:
     """Obtém o código POSIX ou Winsock preservado pela exceção."""

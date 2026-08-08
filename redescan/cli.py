@@ -1,21 +1,17 @@
 """Interface de linha de comando do RedeScan."""
-
 import argparse
 import json
 import platform
 import sys
 from collections import Counter
 from dataclasses import asdict
-
 from redescan.models import Protocol, ScanResult
 from redescan.parsing import expand_targets, parse_ports
 from redescan.probes import ScapyProber, SocketProber
 from redescan.scanner import Scanner
 
-
 DEFAULT_PORTS = "21,22,23,25,53,80,110,139,143,443,445,3306,3389,5432,8080"
 MAX_JOBS_WITHOUT_CONFIRMATION = 65_536
-
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -72,7 +68,6 @@ def build_parser() -> argparse.ArgumentParser:
     )
     return parser
 
-
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -120,7 +115,6 @@ def main(argv: list[str] | None = None) -> int:
         _print_table(visible, results, job_count, method)
     return 0
 
-
 def _validate_options(args: argparse.Namespace) -> None:
     if args.timeout <= 0:
         raise ValueError("timeout deve ser maior que zero")
@@ -129,30 +123,25 @@ def _validate_options(args: argparse.Namespace) -> None:
     if not 1 <= args.workers <= 1_000:
         raise ValueError("workers deve estar entre 1 e 1000")
 
-
 def _protocols(value: str) -> list[Protocol]:
     if value == "both":
         return [Protocol.TCP, Protocol.UDP]
     return [Protocol(value)]
-
 
 def _resolve_method(value: str) -> str:
     if value != "auto":
         return value
     return "connect" if platform.system() == "Windows" else "raw"
 
-
 def _create_prober(method: str, timeout: float, retries: int):
     if method == "raw":
         return ScapyProber(timeout, retries)
     return SocketProber(timeout, retries)
 
-
 def _filter_results(results: list[ScanResult], only_active: bool) -> list[ScanResult]:
     if not only_active:
         return results
     return [result for result in results if result.state.value in {"open", "open|filtered"}]
-
 
 def _print_json(results: list[ScanResult]) -> None:
     data = []
@@ -162,7 +151,6 @@ def _print_json(results: list[ScanResult]) -> None:
         item["state"] = result.state.value
         data.append(item)
     print(json.dumps(data, indent=2, ensure_ascii=False))
-
 
 def _print_table(
     visible: list[ScanResult],
@@ -183,7 +171,6 @@ def _print_table(
     summary = ", ".join(f"{state}: {count}" for state, count in sorted(counts.items()))
     noun = "sondagem" if job_count == 1 else "sondagens"
     print(f"\nConcluído: {job_count} {noun} ({summary}).")
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

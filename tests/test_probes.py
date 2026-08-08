@@ -1,10 +1,8 @@
 import errno
 import unittest
 from unittest.mock import MagicMock, patch
-
 from redescan.models import PortState
 from redescan.probes import SocketProber
-
 
 class SocketProberTests(unittest.TestCase):
     def setUp(self):
@@ -64,7 +62,6 @@ class SocketProberTests(unittest.TestCase):
 
         self.assertEqual(state, PortState.OPEN_OR_FILTERED)
         self.assertIn("sem resposta", reason)
-
 
 if __name__ == "__main__":
     unittest.main()
