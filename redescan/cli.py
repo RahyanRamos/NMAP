@@ -66,9 +66,25 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help=f"permite mais de {MAX_JOBS_WITHOUT_CONFIRMATION} sondagens",
     )
+    parser.add_argument(
+        "--gui",
+        action="store_true",
+        help="abre a interface gráfica em vez de executar no terminal",
+    )
     return parser
 
 def main(argv: list[str] | None = None) -> int:
+    if argv is None:
+        argv = sys.argv[1:]
+
+    # A flag da interface gráfica é tratada antes do parser porque o argumento
+    # posicional de alvos é obrigatório na linha de comando, mas na janela os
+    # alvos são informados pelo usuário depois que a aplicação já está aberta.
+    if "--gui" in argv:
+        from redescan.gui import main as gui_main
+
+        return gui_main()
+
     parser = build_parser()
     args = parser.parse_args(argv)
 

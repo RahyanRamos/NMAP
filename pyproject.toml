@@ -18,3 +18,5 @@ redescan = "redescan.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["redescan*"]
+
+redescan-gui = "redescan.gui:main"

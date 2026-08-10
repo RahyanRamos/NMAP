@@ -254,3 +254,57 @@ tests/            # testes unitários sem tráfego de rede
 - firewalls, latência, perda de pacotes e limitação de ICMP afetam os resultados;
 - a ferramenta não identifica versões de serviços nem sistemas operacionais;
 - mais de 65.536 sondagens exigem `--allow-large-scan`.
+
+
+----------------------------------------------------------------------
+
+## Interface gráfica
+
+Além da linha de comando, o RedeScan possui uma interface gráfica construída
+com Tkinter (biblioteca padrão do Python), sem dependências adicionais.
+
+### Execução
+
+```bash
+python -m redescan --gui
+# ou, equivalente:
+python -m redescan.gui
+```
+
+No Linux, o Tkinter costuma vir em um pacote separado:
+
+```bash
+sudo apt install python3-tk
+```
+
+Para o método `raw` (SYN scan), a janela precisa ser aberta com privilégios:
+
+```bash
+sudo .venv/bin/python -m redescan.gui
+```
+
+### Recursos
+
+- Resultados exibidos em tempo real, coloridos por estado
+- Barra de progresso e contagem de sondagens concluídas
+- Cancelamento de varredura em andamento
+- Filtro para exibir apenas portas abertas
+- Exportação dos resultados em CSV e JSON
+- Bloqueio de escopos excessivos antes de iniciar a varredura
+
+### Arquitetura
+
+A janela não reimplementa nenhuma lógica de varredura: ela reutiliza
+`parsing`, `probes` e `scanner`, exatamente como a CLI faz.
+
+A varredura roda em uma thread separada para não bloquear o laço de eventos
+do Tkinter. Como o `scanner` executa sondagens em paralelo e o Tkinter não é
+seguro para uso concorrente, os resultados são depositados em uma
+`queue.Queue` pelas threads de trabalho e consumidos pela thread principal a
+cada 100 ms via `widget.after`. Nenhum widget é acessado fora da thread
+principal.
+
+O cancelamento é implementado pela classe `CancellableProber`, que envolve o
+prober original e verifica um `threading.Event` antes de cada sondagem. Isso
+adiciona a funcionalidade sem alterar o motor de varredura.
+
